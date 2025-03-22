@@ -12,6 +12,10 @@ import {
 	findMyParticipant,
 	findMyFeedback,
 	findMyEventParticipant,
+	getFeedbackStats,
+	getPresenceStats,
+	getParticipantFeedback,
+	getParticipantPresence,
 } from './repository'
 import { EventSchema } from './validation'
 import { ulid } from 'ulid'
@@ -120,4 +124,34 @@ export const getAllJoinedEvents = async (req: Request, res: Response) => {
 		}),
 	}))
 	res.json(customResponse(result, 'Daftar event'))
+}
+
+export const getEventReport = async (req: Request, res: Response) => {
+	const { id } = req.params
+
+	const feedbackStats = await getFeedbackStats(id)
+	const presenceStats = await getPresenceStats(id)
+
+	const userFeedbacks = await getParticipantFeedback(id)
+	const userPresence = await getParticipantPresence(id)
+
+	const result = {
+		total: {
+			satisfied: feedbackStats.find((f) => f.rating === 1)?._count.rating || 0,
+			present:
+				presenceStats.find((p) => p.isPresence === true)?._count.isPresence ||
+				0,
+			notPresent:
+				presenceStats.find((p) => p.isPresence === false)?._count.isPresence ||
+				0,
+			notSatisfied:
+				feedbackStats.find((f) => f.rating === 2)?._count.rating || 0,
+		},
+		participants: {
+			feedbacks: userFeedbacks,
+			presence: userPresence
+		}
+	}
+
+	res.json(successResponse(result, 'Statistik feedback event'))
 }

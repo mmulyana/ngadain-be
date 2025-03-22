@@ -49,6 +49,7 @@ model EventParticipants {
   registrationDate DateTime @default(now())
   fullname         String
   email            String
+  isPresence       Boolean  @default(false)
 
   event Event @relation(fields: [eventId], references: [id])
   user  User? @relation(fields: [userId], references: [id], onDelete: SetNull)

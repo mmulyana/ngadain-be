@@ -25,7 +25,6 @@ export const getMe = async (req: Request, res: Response) => {
 }
 
 export const updateAccount = async (req: Request, res: Response) => {
-	console.log(req.body)
 	const photoUrl = req.file ? `/uploads/${req.file.filename}` : undefined
 	const result = await update({ ...req.body, photoUrl })
 	res.json(updateResponse(result, 'akun'))

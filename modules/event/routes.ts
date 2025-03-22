@@ -5,6 +5,7 @@ import {
 	getAllJoinedEvents,
 	getCheck,
 	getEventById,
+	getEventReport,
 	registerParticipant,
 	updateEvent,
 } from './controller'
@@ -16,6 +17,7 @@ EventRouter.post('/', upload.single('image'), createEvent)
 EventRouter.patch('/:id', upload.single('image'), updateEvent)
 EventRouter.get('/', getAllEvents)
 EventRouter.get('/:id', getEventById)
+EventRouter.get('/:id/report', getEventReport)
 EventRouter.get('/:id/check', getCheck)
 
 EventRouter.get('/joined/:userId', getAllJoinedEvents)

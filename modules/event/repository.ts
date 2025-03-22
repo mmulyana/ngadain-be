@@ -105,3 +105,47 @@ export const findMyEventParticipant = async (userId: string) => {
 		},
 	})
 }
+
+export const getFeedbackStats = async (eventId: string) => {
+	return prisma.eventFeedback.groupBy({
+		by: ['rating'],
+		where: { eventId },
+		_count: { rating: true },
+	})
+}
+
+export const getPresenceStats = async (eventId: string) => {
+	return prisma.eventParticipants.groupBy({
+		by: ['isPresence'],
+		where: { eventId },
+		_count: { isPresence: true },
+	})
+}
+
+export const getParticipantPresence = async (eventId: string) => {
+	return prisma.eventParticipants.findMany({
+		where: {
+			eventId,
+		},
+		select: {
+			fullname: true,
+			isPresence: true,
+		},
+	})
+}
+export const getParticipantFeedback = async (eventId: string) => {
+	return prisma.eventFeedback.findMany({
+		where: {
+			eventId,
+		},
+		select: {
+			user: {
+				select: {
+					fullname: true,
+				},
+			},
+			message: true,
+			rating: true,
+		},
+	})
+}
