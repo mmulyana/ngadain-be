@@ -19,6 +19,7 @@ model User {
   eventParticipants   EventParticipants[]
   events              Event[]
   documentationEvents DocumentationEvent[]
+  feedbacks           EventFeedback[]
 }
 
 model Event {
@@ -38,6 +39,7 @@ model Event {
 
   participants   EventParticipants[]
   documentations DocumentationEvent[]
+  feedbacks      EventFeedback[]
 }
 
 model EventParticipants {
@@ -62,6 +64,18 @@ model DocumentationEvent {
 
   user  User? @relation(fields: [userId], references: [id], onDelete: SetNull)
   event Event @relation(fields: [eventId], references: [id])
+}
+
+model EventFeedback {
+  id        String   @id @default(uuid())
+  eventId   String
+  userId    String?
+  rating    Int
+  message   String?
+  createdAt DateTime @default(now())
+
+  event Event @relation(fields: [eventId], references: [id])
+  user  User? @relation(fields: [userId], references: [id], onDelete: SetNull)
 }
 
 enum Roles {

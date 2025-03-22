@@ -1,8 +1,16 @@
 import { Request, Response } from 'express'
 import { errorParse, throwError } from '../../shared/utils/error-handler'
-import { customResponse } from '../../shared/utils/response'
+import { customResponse, successResponse } from '../../shared/utils/response'
 
-import { create, findById, findAll, update, remove } from './repository'
+import {
+	create,
+	findById,
+	findAll,
+	update,
+	remove,
+	registerAsParticipant,
+	findMyParticipant,
+} from './repository'
 import { EventSchema } from './validation'
 import { ulid } from 'ulid'
 import { format } from 'date-fns'
@@ -64,4 +72,31 @@ export const updateEvent = async (req: Request, res: Response) => {
 export const deleteEvent = async (req: Request, res: Response) => {
 	await remove(req.params.id)
 	res.json(customResponse(null, 'Event berhasil dihapus'))
+}
+
+export const registerParticipant = async (req: Request, res: Response) => {
+	await registerAsParticipant(req.body)
+	res.json(customResponse(null, 'Akun anda berhasil terdaftar'))
+}
+
+export const getCheck = async (req: Request, res: Response) => {
+	const result = await findMyParticipant(
+		req.query.userId as string,
+		req.params.id as string
+	)
+	if (!result) {
+		res.json(successResponse({ status: 'not_register' }, 'check pendaftaran'))
+	}
+
+	const event = await findById(req.params.id as string)
+	if (event?.date) {
+		const eventDate = new Date(event.date)
+		const today = new Date()
+
+		if (eventDate < today) {
+			res.json(successResponse({ status: 'done' }, 'check pendaftaran'))
+		}
+	}
+
+	res.json(successResponse({ status: 'registered' }, 'check pendaftaran'))
 }
