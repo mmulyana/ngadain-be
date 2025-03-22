@@ -73,3 +73,35 @@ export const findMyParticipant = async (userId: string, eventId: string) => {
 		},
 	})
 }
+
+export const findMyFeedback = async (userId: string, eventId: string) => {
+	return await prisma.eventFeedback.findFirst({
+		where: {
+			AND: [{ userId }, { eventId }],
+		},
+	})
+}
+
+export const findMyEventParticipant = async (userId: string) => {
+	return await prisma.eventParticipants.findMany({
+		where: { userId },
+		include: {
+			event: {
+				include: {
+					user: {
+						select: {
+							id: true,
+							username: true,
+							photoUrl: true,
+						},
+					},
+					_count: {
+						select: {
+							participants: true,
+						},
+					},
+				},
+			},
+		},
+	})
+}

@@ -10,6 +10,8 @@ import {
 	remove,
 	registerAsParticipant,
 	findMyParticipant,
+	findMyFeedback,
+	findMyEventParticipant,
 } from './repository'
 import { EventSchema } from './validation'
 import { ulid } from 'ulid'
@@ -93,10 +95,29 @@ export const getCheck = async (req: Request, res: Response) => {
 		const eventDate = new Date(event.date)
 		const today = new Date()
 
+		const myFeedback = await findMyFeedback(
+			req.query.userId as string,
+			req.params.id as string
+		)
+		if (myFeedback) {
+			res.json(successResponse({ status: 'hide' }, 'check pendaftaran'))
+		}
+
 		if (eventDate < today) {
 			res.json(successResponse({ status: 'done' }, 'check pendaftaran'))
 		}
 	}
 
 	res.json(successResponse({ status: 'registered' }, 'check pendaftaran'))
+}
+
+export const getAllJoinedEvents = async (req: Request, res: Response) => {
+	const data = await findMyEventParticipant(req.params.userId as string)
+	const result = data.map((item) => ({
+		...item.event,
+		date: format(item.event.date, 'dd MMM yyyy', {
+			locale: id,
+		}),
+	}))
+	res.json(customResponse(result, 'Daftar event'))
 }
