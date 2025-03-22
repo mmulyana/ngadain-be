@@ -23,7 +23,7 @@ export const findById = (id: string) =>
 		},
 	})
 
-export const findAll = () =>
+export const findAll = (userId?: string) =>
 	prisma.event.findMany({
 		include: {
 			user: {
@@ -39,6 +39,7 @@ export const findAll = () =>
 				},
 			},
 		},
+		where: userId ? { userId } : {},
 	})
 
 export const update = (id: string, data: any) =>
@@ -60,6 +61,7 @@ export const registerAsParticipant = async (data: {
 			fullname: data.fullname,
 			userId: data.userId,
 			eventId: data.eventId,
+			registrationDate: new Date().toISOString(),
 		},
 	})
 }

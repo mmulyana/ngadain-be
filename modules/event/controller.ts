@@ -49,7 +49,7 @@ export const getEventById = async (req: Request, res: Response) => {
 }
 
 export const getAllEvents = async (req: Request, res: Response) => {
-	const events = await findAll()
+	const events = await findAll((req.query.userId as string) || undefined)
 	const payload = events.map((item) => ({
 		...item,
 		date: format(item.date, 'dd MMM yyyy', {
