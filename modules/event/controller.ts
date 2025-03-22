@@ -4,6 +4,9 @@ import { customResponse } from '../../shared/utils/response'
 
 import { create, findById, findAll, update, remove } from './repository'
 import { EventSchema } from './validation'
+import { ulid } from 'ulid'
+import { format } from 'date-fns'
+import { id } from 'date-fns/locale'
 
 export const createEvent = async (req: Request, res: Response) => {
 	const parsed = EventSchema.safeParse(req.body)
@@ -11,7 +14,12 @@ export const createEvent = async (req: Request, res: Response) => {
 		return errorParse(parsed.error)
 	}
 
-	const result = await create(parsed.data)
+	const id = ulid()
+	const result = await create({
+		...parsed.data,
+		id,
+		isOnline: parsed.data.isOnline === 'true',
+	})
 	res.json(customResponse(result, 'Event berhasil dibuat'))
 }
 
@@ -26,7 +34,13 @@ export const getEventById = async (req: Request, res: Response) => {
 
 export const getAllEvents = async (req: Request, res: Response) => {
 	const events = await findAll()
-	res.json(customResponse(events, 'Daftar event'))
+	const payload = events.map((item) => ({
+		...item,
+		date: format(item.date, 'dd MMM yyyy', {
+			locale: id,
+		}),
+	}))
+	res.json(customResponse(payload, 'Daftar event'))
 }
 
 export const updateEvent = async (req: Request, res: Response) => {

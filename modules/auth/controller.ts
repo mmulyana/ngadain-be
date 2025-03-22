@@ -47,6 +47,7 @@ export const login = async (req: Request, res: Response) => {
 					username: user.username,
 					photoUrl: user.photoUrl,
 					role: user.role,
+					id: user.id,
 				},
 			},
 			'Berhasil masuk'
@@ -75,6 +76,7 @@ export const register = async (req: Request, res: Response) => {
 					username: result.username,
 					photoUrl: result.photoUrl,
 					role: result.role,
+					id: result.id,
 				},
 			},
 			'Berhasil daftar'
