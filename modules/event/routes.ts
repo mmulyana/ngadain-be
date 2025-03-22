@@ -1,10 +1,17 @@
 import { Router } from 'express'
+import {
+	createEvent,
+	getAllEvents,
+	getEventById,
+	updateEvent,
+} from './controller'
+import upload from '../../shared/lib/multer'
 
-const router = Router()
+const EventRouter = Router()
 
-router.post('/')
-router.patch('/')
-router.get('/')
-router.get('/:id')
+EventRouter.post('/', upload.single('image'), createEvent)
+EventRouter.patch('/:id', upload.single('image'), updateEvent)
+EventRouter.get('/', getAllEvents)
+EventRouter.get('/:id', getEventById)
 
-export default router
+export default EventRouter

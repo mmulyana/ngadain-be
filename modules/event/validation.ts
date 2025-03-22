@@ -1,14 +1,13 @@
 import { z } from 'zod'
 
 export const EventSchema = z.object({
-	name: z.string(),
-	description: z.string(),
-	date: z.date(),
-	address: z.string(),
-	category: z.string(),
-	isOnline: z.boolean().default(false),
-	mapUrl: z.string().optional(),
-	linkUrl: z.string().optional(),
+	userId: z.string().min(1, 'User ID is required'),
+	name: z.string().min(1, 'Name is required'),
+	description: z.string().min(1, 'Description is required'),
+	date: z.coerce.date(), // Mengonversi input ke Date
+	address: z.string().min(1, 'Address is required'),
+	category: z.string().min(1, 'Category is required'),
+	isOnline: z.boolean().optional(), // Default false sudah di model
+	mapUrl: z.string().url('Invalid URL').optional(),
+	linkUrl: z.string().url('Invalid URL').optional(),
 })
-
-export type Event = z.infer<typeof EventSchema>
