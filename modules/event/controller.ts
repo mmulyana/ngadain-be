@@ -10,6 +10,7 @@ import { id } from 'date-fns/locale'
 
 export const createEvent = async (req: Request, res: Response) => {
 	const parsed = EventSchema.safeParse(req.body)
+	const photoUrl = req.file ? `/uploads/${req.file.filename}` : undefined
 	if (!parsed.success) {
 		return errorParse(parsed.error)
 	}
@@ -19,6 +20,7 @@ export const createEvent = async (req: Request, res: Response) => {
 		...parsed.data,
 		id,
 		isOnline: parsed.data.isOnline === 'true',
+		photoUrl,
 	})
 	res.json(customResponse(result, 'Event berhasil dibuat'))
 }
@@ -29,7 +31,13 @@ export const getEventById = async (req: Request, res: Response) => {
 		return throwError('Event tidak ditemukan', 404)
 	}
 
-	res.json(customResponse(event, 'Detail event'))
+	const result = {
+		...event,
+		date: format(event.date, 'dd MMM yyyy', {
+			locale: id,
+		}),
+	}
+	res.json(customResponse(result, 'Detail event'))
 }
 
 export const getAllEvents = async (req: Request, res: Response) => {

@@ -8,6 +8,6 @@ export const EventSchema = z.object({
 	address: z.string().min(1, 'Address is required'),
 	category: z.string().min(1, 'Category is required'),
 	isOnline: z.enum(['true', 'false']),
-	mapUrl: z.string().url('Invalid URL').optional(),
-	linkUrl: z.string().url('Invalid URL').optional(),
+	mapUrl: z.string().optional(),
+	linkUrl: z.string().optional(),
 })
