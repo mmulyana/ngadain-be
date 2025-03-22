@@ -43,6 +43,7 @@ export const login = async (req: Request, res: Response) => {
 			{
 				token,
 				user: {
+					email: user.email,
 					fullname: user.fullname,
 					username: user.username,
 					photoUrl: user.photoUrl,
@@ -72,6 +73,7 @@ export const register = async (req: Request, res: Response) => {
 			{
 				token,
 				user: {
+					email: result.email,
 					fullname: result.fullname,
 					username: result.username,
 					photoUrl: result.photoUrl,
